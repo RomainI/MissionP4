@@ -11,10 +11,13 @@ import com.aura.R
 import com.aura.databinding.ActivityHomeBinding
 import com.aura.ui.login.LoginActivity
 import com.aura.ui.transfer.TransferActivity
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * The home activity for the app.
  */
+
+
 class HomeActivity : AppCompatActivity()
 {
 
