@@ -1,4 +1,9 @@
 package com.aura.ui.domain.model
 
-class AccountModel {
-}
+import java.util.Calendar
+
+data class AccountModel(
+    val id:String,
+    val amount: Double,
+    val isMainAccount: Boolean
+)

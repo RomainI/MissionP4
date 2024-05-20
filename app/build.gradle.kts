@@ -61,6 +61,9 @@ dependencies {
   implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
   implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 
+  //datastore
+  implementation("androidx.datastore:datastore-preferences:1.1.0")
+
 
   // Testing Dependencies
   testImplementation("junit:junit:4.13.2")
