@@ -31,7 +31,7 @@ object NetworkModule {
             .build()
     }
 
-    // Provides a singleton instance of WeatherClient using Retrofit
+    // Provides a singleton instance of AccountClient using Retrofit
     @Singleton
     @Provides
     fun provideAccountClient(retrofit: Retrofit): AccountClient {
@@ -42,7 +42,7 @@ object NetworkModule {
     // Private function to configure OkHttpClient with an interceptor for logging
     private fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder().apply {
-            addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            addInterceptor(ErrorInterceptor())
         }.build()
     }
 }

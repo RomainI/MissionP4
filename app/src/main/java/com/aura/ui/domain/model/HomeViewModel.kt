@@ -28,89 +28,36 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AuraUiState())
     val uiState: Flow<AuraUiState> = _uiState.asStateFlow()
 
-    /** init {
-    Log.d("HomeViewModel", "INIT() ")
-    getLogin()
-    }*/
-
-
     private val _loginState = MutableStateFlow<String?>(null)
     private val loginState: StateFlow<String?> = _loginState.asStateFlow()
 
-    /**private fun getLogin() {
-    viewModelScope.launch {
-    preferencesManager.loginFlow.collectLatest { loginRequest ->
-    _loginState.value = loginRequest.id
-    Log.d("LoginViewModel", "Login retrieved: ${loginRequest.id}")
-    }
-    }
-    }*/
 
-    private fun getLogin() {
+
+   /**private fun getLogin() {
         viewModelScope.launch {
             preferencesManager.loginFlow.collectLatest { loginRequest ->
                 // Ensure _loginState is not null and loginRequest is valid before assignment
                 if (_loginState != null) {
                     _loginState.value = loginRequest.id
-                    Log.d("HomeViewModel", "getLogin login: ${loginRequest.id}")
+                    //Log.d("HomeViewModel", "getLogin login: ${loginRequest.id}")
                 }
             }
         }
-    }
-
-
-    /**
-    fun getAccounts() {
-    getLogin()
-    viewModelScope.launch {
-
-    Log.d("getAccountsLogin", ": $login")
-
-    if (login.isNotEmpty())
-    dataRepository.getAccountsFlow(login).collect { resultUpdate ->
-    when (resultUpdate) {
-    is Result.Failure -> _uiState.update { currentState ->
-    currentState.copy(
-    errorMessage = resultUpdate.message
-    )
-    }
-
-    Result.Loading -> _uiState.update { currentState ->
-    currentState.copy(
-    isLoading = true,
-    errorMessage = null,
-    )
-    }
-
-    is Result.Success ->
-    _uiState.update { currentState ->
-    currentState.copy(
-    isLoading = false,
-    errorMessage = null,
-    accounts = resultUpdate.value
-    )
-    }
-
-
-    }
-    }
-
-    }
-
-
     }*/
 
+
+
     fun getAccounts() {
-        getLogin()
+        //getLogin()
         viewModelScope.launch {
-            loginState.collect { login ->
-                if (login != null && login.isNotEmpty()) {
-                    Log.d("HomeViewModel", "Fetching accounts for login: $login")
-                    dataRepository.getAccountsFlow(login).collect { resultUpdate ->
+            preferencesManager.loginFlow.collectLatest { login ->
+                if (login != null && login.id.isNotEmpty()) {
+                    //Log.d("HomeViewModel", "Fetching accounts for login: $login")
+                    dataRepository.getAccountsFlow(login.id).collect { resultUpdate ->
                         handleResultUpdate(resultUpdate)
                     }
                 } else {
-                    Log.d("HomeViewModel", "getAccounts login is null")
+                    //Log.d("HomeViewModel", "getAccounts login is null")
                 }
             }
         }
@@ -137,11 +84,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun deletePreferences() {
-        viewModelScope.launch {
-            preferencesManager.deleteLogin()
-        }
-    }
 
     fun resetLoginState() {
         _loginState.value = null

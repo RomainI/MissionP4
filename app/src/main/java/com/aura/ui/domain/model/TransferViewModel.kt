@@ -52,65 +52,22 @@ class TransferViewModel @Inject constructor(
         }
     }
 
-     fun proceedTransfer(recipient: String, amount: String) {
-
-        getSender(recipient, amount)
-        /**loginState.collect{ login->
-            if (login != null) {
-                dataRepository.getTransfer(login, recipient, amount).onEach { result ->
-                    when (result) {
-                        is Result.Failure -> _uiState.update { currentState ->
-                            Log.d("TransferViewModel", "proceedTransfer: Failure")
-                            jobFlow?.cancel()
-                            currentState.copy(
-                                isLoading = false,
-                                errorMessage = result.message,
-                                resultTransfer = false
-                            )
-
-                        }
-
-                        Result.Loading -> _uiState.update { currentState ->
-                            Log.d("TransferViewModel", "proceedTransfer: Loading")
-                            currentState.copy(
-                                isLoading = true,
-                                errorMessage = null,
-                            )
-                        }
-
-                        is Result.Success -> _uiState.update { currentState ->
-                            Log.d("TransferViewModel", "proceedTransfer: Success "+result.value)
-                            jobFlow?.cancel()
-                            currentState.copy(
-                                isLoading = false,
-                                errorMessage = null,
-                                resultTransfer = result.value
-                            )
-                        }
-                    }
-                }.launchIn(viewModelScope)
-
-            }
-        }*/
-// Immediately set loading to true when transfer starts
 
 
-    }
 
-
-    private fun getSender(recipient: String, amount: String) {
+    fun proceedTransfer(recipient: String, amount: String) {
         stopFlow()
         if (NetworkUtil.isNetworkAvailable(getApplication())) {
             jobFlow = viewModelScope.launch {
                 preferencesManager.loginFlow.collect { loginRequest ->
                     // Ensure _loginState is not null and loginRequest is valid before assignment
                     _loginState.value = loginRequest.id
-                    Log.d("TransferViewModel", "Login from preferencesmanager: ${loginRequest.id}")
+                    //Log.d("TransferViewModel", "Login from preferencesmanager: ${loginRequest.id}")
 
 
                     _uiState.value = _uiState.value.copy(isLoading = true)
                     val login = loginState.value  // Ensure you have a login before proceeding
-                    Log.d("TransferViewModel", "proceedTransfer: " + login)
+                    //Log.d("TransferViewModel", "proceedTransfer: " + login)
                     if (login != null) {
                         dataRepository.getTransfer(login, recipient, amount).collect { result ->
                             when (result) {

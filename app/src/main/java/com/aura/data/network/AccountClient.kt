@@ -19,7 +19,7 @@ interface AccountClient {
 
     @POST("/login")
     suspend fun getLogin(
-        @Body body: LoginRequest,
+        @Body body: LoginPassword,
        /** @Query (value = "id") id: String,
         @Query (value = "password") password : String*/
     ): Response<AuraServerResponse.LoginResponse>
@@ -30,7 +30,7 @@ interface AccountClient {
     ): Response<AuraServerResponse.TransferResponse>
 }
 
-data class LoginRequest(
+data class LoginPassword(
     val id: String,
     val password: String
 )

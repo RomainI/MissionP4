@@ -12,7 +12,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.aura.data.network.LoginRequest
+import com.aura.data.network.LoginPassword
 import com.aura.data.repository.PreferencesManager
 import com.aura.databinding.ActivityLoginBinding
 import com.aura.ui.domain.model.LoginViewModel
@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
         val loginText = logEditText.text.toString()
         val passwordText = passEditText.text.toString()
         viewModel.setLoginPassword(loginText, passwordText)
-        Log.d("afterpasschanged", "onCreate: $loginText$passwordText")
+        //Log.d("afterpasschanged", "onCreate: $loginText$passwordText")
 
         }
 
@@ -70,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
         val loginText = logEditText.text.toString()
         val passwordText = passEditText.text.toString()
         viewModel.setLoginPassword(loginText, passwordText)
-        Log.d("afterpasschanged", "onCreate: $loginText$passwordText")
+        //Log.d("afterpasschanged", "onCreate: $loginText$passwordText")
         }*/
 
 
@@ -204,19 +204,16 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.uiState.collect { state ->
                     if (state.isLogOk==true) {
                         // Connexion réussie
-                        stopFlow()
                         viewModel.saveData(currentLogin, currentPassword)
                         startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                         finish()
                     } else if (state.errorMessage != null) {
                         // Afficher l'erreur spécifique
-
-                        stopFlow()
                         Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_LONG).show()
                     } else if (state.isLogOk==false){
-                        stopFlow()
                         Snackbar.make(binding.root, "Login or password incorrect", Snackbar.LENGTH_LONG).show()
                     }
+                    stopFlow()
                     loading.visibility = View.INVISIBLE
                     login.isEnabled = true
                 }

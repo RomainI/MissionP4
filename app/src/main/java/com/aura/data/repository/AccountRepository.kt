@@ -3,7 +3,7 @@ package com.aura.data.repository
 import android.util.Log
 import com.aura.data.repository.Result
 import com.aura.data.network.AccountClient
-import com.aura.data.network.LoginRequest
+import com.aura.data.network.LoginPassword
 import com.aura.data.network.TransferRequestBody
 import com.aura.ui.domain.model.AccountModel
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +25,7 @@ class AccountRepository(private val dataService: AccountClient) {
     //}
     fun getLogginAccess(id: String, pass: String) = flow {
         emit(Result.Loading)
-        val result = dataService.getLogin(LoginRequest(id, pass)).body()?.granted
+        val result = dataService.getLogin(LoginPassword(id, pass)).body()?.granted
             ?: throw Exception("Invalid data")
         Log.e("POST result", result.toString())
         emit(Result.Success(result))
@@ -60,7 +60,7 @@ class AccountRepository(private val dataService: AccountClient) {
                         amount = account.amount
                     )
                 } ?: listOf()
-                Log.d("AccountFlow", "Successfully fetched accounts")
+                //Log.d("AccountFlow", "Successfully fetched accounts")
                 emit(Result.Success(accountModels))
             } else {
                 Log.e("AccountFlow", "Failed to fetch accounts: ${response.message()}")
@@ -84,7 +84,7 @@ class AccountRepository(private val dataService: AccountClient) {
                     isMainAccount = account.mainAccount,
                     amount = account.amount
                 )
-                //Log.d("accountmodels2", "getAccountsFlow: "+account.amount.toString())
+                ////Log.d("accountmodels2", "getAccountsFlow: "+account.amount.toString())
 
         }?.toMutableList() ?: mutableListOf()
         emit(Result.Success(accountModels))
@@ -93,7 +93,7 @@ class AccountRepository(private val dataService: AccountClient) {
     }*/
 
     fun getTransfer(sender: String, recipient: String, amount: String) = flow {
-       Log.d("AccountRepository", "getTransfer: ")
+       //Log.d("AccountRepository", "getTransfer: ")
         emit(Result.Loading)
         val result = dataService.transferMoney(TransferRequestBody( sender, recipient, amount)).body()?.result
         emit(Result.Success(result))

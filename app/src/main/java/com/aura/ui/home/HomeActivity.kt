@@ -57,7 +57,7 @@ class HomeActivity : AppCompatActivity() {
         val balance = binding.balance
         val transfer = binding.transfer
         viewModel.getAccounts()
-        Log.d("onCreate: HomeActivity", "onCreate: HomeActivity")
+        //Log.d("onCreate: HomeActivity", "onCreate: HomeActivity")
         lifecycleScope.launch {
             loadingHome.visibility = View.VISIBLE
             viewModel.uiState.collect { uiState ->
@@ -66,12 +66,12 @@ class HomeActivity : AppCompatActivity() {
 
                 uiState.accounts.find { it.isMainAccount }?.let { mainAccount ->
                     balance.text = mainAccount.amount.toString()
-                    Log.d("HomeActivity", "Main account balance: ${mainAccount.amount}")
+                    //Log.d("HomeActivity", "Main account balance: ${mainAccount.amount}")
                 }
                 if(!uiState.isLoading) loadingHome.visibility = View.INVISIBLE
             }
         }
-        //Log.d("GET ACCOUNTS", viewModel.getAccounts()?.get(0)?.amount.toString())
+        ////Log.d("GET ACCOUNTS", viewModel.getAccounts()?.get(0)?.amount.toString())
         /**viewModel.getAccounts()?.onEach {
 
         when(it.isMainAccount){

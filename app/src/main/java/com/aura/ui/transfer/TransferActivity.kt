@@ -66,26 +66,26 @@ class TransferActivity : AppCompatActivity() {
                 viewModel.proceedTransfer(recipient.text.toString(), amount.text.toString())
                 observeTransferState()
                 /**transfer.isEnabled = false
-                Log.d("TransferActivity", "transfer.isenable=false ")
+                //Log.d("TransferActivity", "transfer.isenable=false ")
                 viewModel.uiState.collectLatest {
-                    Log.d("TransferActivity", "uiStateCollect ")
+                    //Log.d("TransferActivity", "uiStateCollect ")
 
                     if (it.resultTransfer == true) {
-                        Log.d("TransferActivity", "it.resultTransfer==true ")
+                        //Log.d("TransferActivity", "it.resultTransfer==true ")
                         loading.visibility = View.INVISIBLE
                         showSnackbar("Success !")
                         navigateToHome()
                     } else
                         if (it.resultTransfer == false) {
-                            Log.d("TransferActivity", "it.resultTransfer==false ")
+                            //Log.d("TransferActivity", "it.resultTransfer==false ")
                             loading.visibility = View.INVISIBLE
                             showSnackbar("Insufficient balance")
                         } else
                             if (it.isLoading) {
-                                Log.d("TransferActivity", "it.isLoading")
+                                //Log.d("TransferActivity", "it.isLoading")
                                 loading.visibility = View.VISIBLE
                             } else {
-                                Log.d("TransferActivity", "else")
+                                //Log.d("TransferActivity", "else")
                                 loading.visibility = View.INVISIBLE
                                 showSnackbar("Unexpected error")
 
@@ -116,10 +116,7 @@ class TransferActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 //Ask ViewModel if both edit text are filled to activate transfer button
                 viewModel.checkTransferButton(recipient.text.toString(), amount.text.toString())
-                Log.d(
-                    "Transfer activity oncreate",
-                    "transfer onCreate: amount = " + amount.text.toString()
-                )
+                //Log.d( "Transfer activity oncreate", "transfer onCreate: amount = " + amount.text.toString() )
                 viewModel.uiState.collect {
                     transfer.isEnabled = it.isFilled
                 }
@@ -163,7 +160,7 @@ class TransferActivity : AppCompatActivity() {
                     showSnackbar("Success!")
                     delay(500L)
                     navigateToHome()
-                } else if (state.resultTransfer == false) {
+                } else if (state.resultTransfer == false && state.errorMessage.isNullOrBlank()) {
                     showSnackbar("Insufficient balance")
                     delay(500L)
                     navigateToHome()

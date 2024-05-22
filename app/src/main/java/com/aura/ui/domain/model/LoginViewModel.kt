@@ -5,7 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.aura.data.network.LoginRequest
+import com.aura.data.network.LoginPassword
 import com.aura.data.repository.AccountRepository
 import com.aura.data.repository.PreferencesManager
 import com.aura.data.repository.Result
@@ -43,7 +43,7 @@ class LoginViewModel @Inject constructor(private val dataRepository: AccountRepo
     fun getConnection(login: String, password: String) {
         if (NetworkUtil.isNetworkAvailable(getApplication())) {
 
-            Log.d("ACTIVITY", "getConnection: $login $password",)
+            //Log.d("ACTIVITY", "getConnection: $login $password",)
             _uiState.update { currentState ->
                 currentState.copy(
                     isLoading = true,
@@ -86,9 +86,9 @@ class LoginViewModel @Inject constructor(private val dataRepository: AccountRepo
 
     fun saveData(login :String, password: String){
         viewModelScope.launch (Dispatchers.IO){
-            Log.d("savepref", ": $login")
-            val loginRequest = LoginRequest(login, password)
-            preferencesManager.saveLoginRequest(loginRequest)
+            //Log.d("savepref", ": $login")
+            val loginRequest = LoginPassword(login, password)
+            preferencesManager.saveLoginPassword(loginRequest)
         }
     }
 
