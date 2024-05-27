@@ -58,22 +58,7 @@ class LoginActivity : AppCompatActivity() {
         var loginText = logEditText.text.toString()
         var passwordText = passEditText.text.toString()
 
-        /**passEditText.doAfterTextChanged {
-        val loginText = logEditText.text.toString()
-        val passwordText = passEditText.text.toString()
-        viewModel.setLoginPassword(loginText, passwordText)
-        //Log.d("afterpasschanged", "onCreate: $loginText$passwordText")
-
-        }
-
-        logEditText.doAfterTextChanged {
-        val loginText = logEditText.text.toString()
-        val passwordText = passEditText.text.toString()
-        viewModel.setLoginPassword(loginText, passwordText)
-        //Log.d("afterpasschanged", "onCreate: $loginText$passwordText")
-        }*/
-
-
+        //Updating uiState from ViewModel to activate (or desactivate) login button
         passEditText.doAfterTextChanged {
             loginText = logEditText.text.toString()
             passwordText = passEditText.text.toString()
@@ -88,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
 
             }
         }
-
+        //Updating uiState from ViewModel to activate (or desactivate) login button
         logEditText.doAfterTextChanged {
             loginText = logEditText.text.toString()
             passwordText = passEditText.text.toString()
@@ -102,94 +87,8 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-        /**
-        lifecycleScope.launch {
-        viewModel.uiState.collect { uiState ->
-        login.isEnabled = uiState.isFilled
-        if (uiState.isLoading) {
-        loading.visibility = View.VISIBLE
-        } else {
-        loading.visibility = View.INVISIBLE
-        }
-        }
-        }
-         */
 
-        /**login.setOnClickListener {
-            val currentLogin = logEditText.text.toString()
-            val currentPassword = passEditText.text.toString()
-            lifecycleScope.launch {
-                loading.visibility = View.VISIBLE
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    login.isEnabled = false
-                    flowJob = launch {
-                        viewModel.uiState.collect {
-                            viewModel.getConnection(
-                                currentLogin,
-                                currentPassword
-                            )
-                            if (it.isLogOk==true) {
-                                viewModel.saveData(
-                                    currentLogin,
-                                    currentPassword
-                                )
-                                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            } else if (it.errorMessage != null) {
-                                Snackbar.make(
-                                    binding.root,
-                                    it.errorMessage.toString(),
-                                    Snackbar.LENGTH_LONG
-                                )
-                                    .show()
-                                flowJob?.cancel()
-                            } else{
-                                Snackbar.make(
-                                    binding.root,
-                                    "Login or password incorrect",
-                                    Snackbar.LENGTH_LONG
-                                ).show()
-                                loading.visibility = View.INVISIBLE
-                                flowJob?.cancel()
-
-                            }
-                        }
-
-                        /** if (it.isLogOk && it.errorMessage.isNullOrBlank()) {
-                        //saving user datas if the login & password are correct
-                        viewModel.saveData(it.login, it.password)
-                        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                        } else if (!it.isLogOk) {
-                        Snackbar.make(
-                        binding.root,
-                        "Login or password incorrect",
-                        Snackbar.LENGTH_LONG
-                        ).show()
-                        loading.visibility = View.INVISIBLE
-                        flowJob?.cancel()
-                        } else if (!it.errorMessage.isNullOrBlank()) Snackbar.make(
-                        binding.root,
-                        it.errorMessage.toString(),
-                        Snackbar.LENGTH_LONG
-                        )
-                        .show() else Snackbar.make(
-                        binding.root,
-                        "Unexpected Error",
-                        Snackbar.LENGTH_LONG
-                        ).show()
-                        }*/
-
-                    }
-                }
-            }
-            //loading.visibility = View.INVISIBLE
-            login.isEnabled = true
-        }*/
-
-
+        //sending to viewmodel login and password and checking the flow answer
         login.setOnClickListener {
             val currentLogin = logEditText.text.toString()
             val currentPassword = passEditText.text.toString()
@@ -202,16 +101,21 @@ class LoginActivity : AppCompatActivity() {
                     currentPassword
                 )
                 viewModel.uiState.collect { state ->
-                    if (state.isLogOk==true) {
-                        // Connexion réussie
+                    if (state.isLogOk == true) {
+                        // Connection succeed
                         viewModel.saveData(currentLogin, currentPassword)
                         startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                         finish()
                     } else if (state.errorMessage != null) {
-                        // Afficher l'erreur spécifique
+                        // Error catched
                         Snackbar.make(binding.root, state.errorMessage, Snackbar.LENGTH_LONG).show()
-                    } else if (state.isLogOk==false){
-                        Snackbar.make(binding.root, "Login or password incorrect", Snackbar.LENGTH_LONG).show()
+                    } else if (state.isLogOk == false) {
+                        // Connection failed (id or password incorrect)
+                        Snackbar.make(
+                            binding.root,
+                            "Login or password incorrect",
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                     stopFlow()
                     loading.visibility = View.INVISIBLE
@@ -222,7 +126,7 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun stopFlow(){
+    private fun stopFlow() {
         flowJob?.cancel()
     }
 

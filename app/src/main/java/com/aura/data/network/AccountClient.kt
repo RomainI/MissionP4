@@ -1,15 +1,13 @@
 package com.aura.data.network
 
 import com.aura.data.response.AuraServerResponse
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.HeaderMap
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.Query
+
+
 interface AccountClient {
     @GET("/accounts/{id}")
     suspend fun getAccountDetails(
@@ -20,8 +18,6 @@ interface AccountClient {
     @POST("/login")
     suspend fun getLogin(
         @Body body: LoginPassword,
-       /** @Query (value = "id") id: String,
-        @Query (value = "password") password : String*/
     ): Response<AuraServerResponse.LoginResponse>
 
     @POST("/transfer")
@@ -30,11 +26,17 @@ interface AccountClient {
     ): Response<AuraServerResponse.TransferResponse>
 }
 
+/**
+ * class used to call the connection API
+ */
 data class LoginPassword(
     val id: String,
     val password: String
 )
 
+/**
+ * class used to call the transfer API
+ */
 data class TransferRequestBody(
     val sender: String,
     val recipient: String,

@@ -2,8 +2,10 @@ package com.aura.data.response
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.util.Calendar
 
+/**
+ * class used to parse JSON returns from the API
+ */
 @JsonClass(generateAdapter = true)
 class AuraServerResponse {
 

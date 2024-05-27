@@ -6,7 +6,9 @@ import android.net.NetworkCapabilities
 
 
 object NetworkUtil {
-
+    /**
+     * verify network connection
+     */
     fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

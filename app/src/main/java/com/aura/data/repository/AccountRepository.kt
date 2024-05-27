@@ -1,28 +1,21 @@
 package com.aura.data.repository
 
 import android.util.Log
-import com.aura.data.repository.Result
 import com.aura.data.network.AccountClient
 import com.aura.data.network.LoginPassword
 import com.aura.data.network.TransferRequestBody
 import com.aura.ui.domain.model.AccountModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.update
 
 class AccountRepository(private val dataService: AccountClient) {
 
-
-    //private val _uiState = MutableStateFlow(HomeUiState())
-    //val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
-
-    //fun updateState(update: (HomeUiState) -> HomeUiState) {
-    //    _uiState.update(update)
-    //}
+    /**
+     * Call the interface used by retrofit to get the connection access
+     * @param : id (login) String
+     * @param : pass (password) String
+     * @return : a Flow of Result containing a Boolean (true is the connection is OK, false if it is not)
+     */
     fun getLogginAccess(id: String, pass: String) = flow {
         emit(Result.Loading)
         val result = dataService.getLogin(LoginPassword(id, pass)).body()?.granted
@@ -30,24 +23,15 @@ class AccountRepository(private val dataService: AccountClient) {
         Log.e("POST result", result.toString())
         emit(Result.Success(result))
     }.catch { error ->
-        //Log.e("WeatherRepository", error.message ?: "")
         emit(Result.Failure(error.message))
     }
 
-    /**   fun getAccounts(id: String) = flow {
-    emit(Result.Loading)
-    val isMainAccount =
-    dataService.getAccountDetails(id).body()?.mainAccount ?: throw Exception("Invalid data")
-    val amount =
-    dataService.getAccountDetails(id).body()?.amount ?: throw Exception("Invalid data")
-    val idAccount =
-    dataService.getAccountDetails(id).body()?.id ?: throw Exception("Invalid Data")
-    val result = AccountModel(idAccount, amount, isMainAccount)
-    emit(Result.Success(result))
-    }.catch { error ->
-    emit(Result.Failure(error.message))
-    }
+    /**
+     * Call the interface used by retrofit to get the account list from an id
+     * @param : id (login) String
+     * @return : a Flow of Result containing a list of AccountModel
      */
+
     fun getAccountsFlow(id: String) = flow {
         emit(Result.Loading)
         try {
@@ -71,26 +55,14 @@ class AccountRepository(private val dataService: AccountClient) {
             emit(Result.Failure(e.message ?: "Unknown error"))
         }
     }
-   /** fun getAccountsFlow(id: String) = flow {
-        emit(Result.Loading)
-        // Récupérer la liste d'Account depuis l'API
-        val accounts = dataService.getAccountDetails(id)
 
-        // Convertir la liste d'Account en liste d'AccountModel
-        val accountModels = accounts.body()?.map { account ->
-
-                AccountModel(
-                    id = account.id,
-                    isMainAccount = account.mainAccount,
-                    amount = account.amount
-                )
-                ////Log.d("accountmodels2", "getAccountsFlow: "+account.amount.toString())
-
-        }?.toMutableList() ?: mutableListOf()
-        emit(Result.Success(accountModels))
-    }.catch { error ->
-        emit(Result.Failure(error.message))
-    }*/
+    /**
+     * Call the interface used by retrofit to get the connection access
+     * @param : sender String
+     * @param : recipient String
+     * @param : amount String
+     * @return : a Flow of Result containing a Boolean (true is the transfer is OK, false if it is not)
+     */
 
     fun getTransfer(sender: String, recipient: String, amount: String) = flow {
        //Log.d("AccountRepository", "getTransfer: ")

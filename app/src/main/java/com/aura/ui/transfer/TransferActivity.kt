@@ -46,16 +46,7 @@ class TransferActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTransferBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        //INIT
-
         setupUiComponents()
-
-
-        /**
-         * check if recipient edit text is filled
-         */
-
 
         /**
          * click on transfer button
@@ -65,40 +56,8 @@ class TransferActivity : AppCompatActivity() {
                 loading.visibility = View.VISIBLE
                 viewModel.proceedTransfer(recipient.text.toString(), amount.text.toString())
                 observeTransferState()
-                /**transfer.isEnabled = false
-                //Log.d("TransferActivity", "transfer.isenable=false ")
-                viewModel.uiState.collectLatest {
-                    //Log.d("TransferActivity", "uiStateCollect ")
-
-                    if (it.resultTransfer == true) {
-                        //Log.d("TransferActivity", "it.resultTransfer==true ")
-                        loading.visibility = View.INVISIBLE
-                        showSnackbar("Success !")
-                        navigateToHome()
-                    } else
-                        if (it.resultTransfer == false) {
-                            //Log.d("TransferActivity", "it.resultTransfer==false ")
-                            loading.visibility = View.INVISIBLE
-                            showSnackbar("Insufficient balance")
-                        } else
-                            if (it.isLoading) {
-                                //Log.d("TransferActivity", "it.isLoading")
-                                loading.visibility = View.VISIBLE
-                            } else {
-                                //Log.d("TransferActivity", "else")
-                                loading.visibility = View.INVISIBLE
-                                showSnackbar("Unexpected error")
-
-                            }
-
-
-                }*/
-
             }
-
-
         }
-
     }
 
     private fun setupUiComponents() {
@@ -106,24 +65,24 @@ class TransferActivity : AppCompatActivity() {
         amount = binding.amount
         transfer = binding.transfer
         loading = binding.loading
-
         setupTransferButton()
     }
-
+    
+    /**
+     * check if recipient edit text is filled
+     */
     private fun setupTransferButton() {
         transfer.isEnabled = false
         recipient.doAfterTextChanged {
             lifecycleScope.launch {
                 //Ask ViewModel if both edit text are filled to activate transfer button
                 viewModel.checkTransferButton(recipient.text.toString(), amount.text.toString())
-                //Log.d( "Transfer activity oncreate", "transfer onCreate: amount = " + amount.text.toString() )
                 viewModel.uiState.collect {
                     transfer.isEnabled = it.isFilled
                 }
 
             }
         }
-
 
         /**
          * check if amount edit text is filled
@@ -139,8 +98,6 @@ class TransferActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
     }
@@ -150,18 +107,23 @@ class TransferActivity : AppCompatActivity() {
         finish()
     }
 
+    /**
+     * analyse the answer flow
+     */
+
     private fun observeTransferState() {
         lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 binding.loading.visibility = if (state.isLoading) View.VISIBLE else View.INVISIBLE
                 binding.transfer.isEnabled = state.isFilled && !state.isLoading
-
                 if (state.resultTransfer == true) {
                     showSnackbar("Success!")
+                    //adding a delay to let the user read the snackbar
                     delay(500L)
                     navigateToHome()
                 } else if (state.resultTransfer == false && state.errorMessage.isNullOrBlank()) {
                     showSnackbar("Insufficient balance")
+                    //adding a delay to let the user read the snackbar
                     delay(500L)
                     navigateToHome()
                 } else if (state.errorMessage != null) {

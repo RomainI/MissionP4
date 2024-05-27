@@ -1,5 +1,9 @@
 package com.aura.ui.domain.model
 
+/**
+ *
+ * UI state class
+ */
 data class AuraUiState(
     val login: String = "",
     val password: String = "",

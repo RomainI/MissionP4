@@ -41,20 +41,30 @@ class TransferViewModel @Inject constructor(
     val loginState: StateFlow<String?> = _loginState.asStateFlow()
     private val _uiState = MutableStateFlow(AuraUiState())
     val uiState: Flow<AuraUiState> = _uiState.asStateFlow()
-    private var jobFlow :Job ?=null
+    private var jobFlow: Job? = null
 
+
+    /**
+     * Function used to activate, or not, the transfer button when recipient and amount are both filled
+     * @param recipient String
+     * @param amount String
+     *
+     */
     fun checkTransferButton(recipient: String, amount: String) {
         _uiState.update { currentState ->
             currentState.copy(
-                isFilled = recipient.isNotEmpty() && amount.isNotEmpty() && amount !="",
+                isFilled = recipient.isNotEmpty() && amount.isNotEmpty() && amount != "",
             )
 
         }
     }
 
-
-
-
+    /**
+     * Used to proceed via the repository, and the API. Updates uiState depending of the answer
+     * @param recipient String
+     * @param amount String
+     *
+     */
     fun proceedTransfer(recipient: String, amount: String) {
         stopFlow()
         if (NetworkUtil.isNetworkAvailable(getApplication())) {
@@ -62,12 +72,9 @@ class TransferViewModel @Inject constructor(
                 preferencesManager.loginFlow.collect { loginRequest ->
                     // Ensure _loginState is not null and loginRequest is valid before assignment
                     _loginState.value = loginRequest.id
-                    //Log.d("TransferViewModel", "Login from preferencesmanager: ${loginRequest.id}")
-
-
                     _uiState.value = _uiState.value.copy(isLoading = true)
-                    val login = loginState.value  // Ensure you have a login before proceeding
-                    //Log.d("TransferViewModel", "proceedTransfer: " + login)
+                    val login = loginState.value
+                    // Ensure there is a login before proceeding
                     if (login != null) {
                         dataRepository.getTransfer(login, recipient, amount).collect { result ->
                             when (result) {
@@ -99,13 +106,19 @@ class TransferViewModel @Inject constructor(
 
             }
         } else {
-                // Afficher un message ou gérer l'absence de connexion
-                Snackbar.make(getApplication(), "No internet connection", Toast.LENGTH_SHORT).show()
+            /**
+             * Display a Snackbar when there is an internet issue
+             */
+            Snackbar.make(getApplication(), "No internet connection", Toast.LENGTH_SHORT).show()
         }
 
     }
 
-    fun stopFlow(){
+    /**
+     * Used to cancel jobFlow
+     *
+     */
+    fun stopFlow() {
         jobFlow?.cancel()
     }
 

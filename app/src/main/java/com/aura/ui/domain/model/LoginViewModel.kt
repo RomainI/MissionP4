@@ -29,6 +29,12 @@ class LoginViewModel @Inject constructor(private val dataRepository: AccountRepo
     private val _uiState = MutableStateFlow(AuraUiState())
     val uiState: Flow<AuraUiState> = _uiState.asStateFlow()
 
+    /**
+     * Function used to activate, or not, the Connection button when login and password are both filled
+     * @param login String
+     * @param password String
+     *
+     */
     fun setLoginPassword(login: String, password: String) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -40,10 +46,14 @@ class LoginViewModel @Inject constructor(private val dataRepository: AccountRepo
         }
     }
 
+    /**
+     * Used get connection from the repository, and the API. Updates uiState depending of the answer
+     * @param login String
+     * @param password String
+     *
+     */
     fun getConnection(login: String, password: String) {
         if (NetworkUtil.isNetworkAvailable(getApplication())) {
-
-            //Log.d("ACTIVITY", "getConnection: $login $password",)
             _uiState.update { currentState ->
                 currentState.copy(
                     isLoading = true,
@@ -78,15 +88,21 @@ class LoginViewModel @Inject constructor(private val dataRepository: AccountRepo
             }.launchIn(viewModelScope)
 
         } else {
-            // Afficher un message ou gérer l'absence de connexion
+            /**
+             * Display a Snackbar when there is an internet issue
+             */
             Snackbar.make(getApplication(), "No internet connection", Toast.LENGTH_SHORT).show()
 
         }
     }
 
+    /**
+     * Used to save login and password in DataStore
+     * @param login String
+     * @param password String
+     */
     fun saveData(login :String, password: String){
         viewModelScope.launch (Dispatchers.IO){
-            //Log.d("savepref", ": $login")
             val loginRequest = LoginPassword(login, password)
             preferencesManager.saveLoginPassword(loginRequest)
         }

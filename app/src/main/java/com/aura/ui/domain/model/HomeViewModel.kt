@@ -1,7 +1,6 @@
 package com.aura.ui.domain.model
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.aura.data.repository.AccountRepository
@@ -13,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,39 +29,25 @@ class HomeViewModel @Inject constructor(
     private val _loginState = MutableStateFlow<String?>(null)
     private val loginState: StateFlow<String?> = _loginState.asStateFlow()
 
-
-
-   /**private fun getLogin() {
-        viewModelScope.launch {
-            preferencesManager.loginFlow.collectLatest { loginRequest ->
-                // Ensure _loginState is not null and loginRequest is valid before assignment
-                if (_loginState != null) {
-                    _loginState.value = loginRequest.id
-                    //Log.d("HomeViewModel", "getLogin login: ${loginRequest.id}")
-                }
-            }
-        }
-    }*/
-
-
-
+    /**
+     * provides flow of account model list. It uses login catched from DataStore
+     */
     fun getAccounts() {
-        //getLogin()
         viewModelScope.launch {
             preferencesManager.loginFlow.collectLatest { login ->
                 if (login != null && login.id.isNotEmpty()) {
-                    //Log.d("HomeViewModel", "Fetching accounts for login: $login")
                     dataRepository.getAccountsFlow(login.id).collect { resultUpdate ->
                         handleResultUpdate(resultUpdate)
                     }
                 } else {
-                    //Log.d("HomeViewModel", "getAccounts login is null")
                 }
             }
         }
     }
 
-
+    /**
+     * Updates the uiState based on a Result<List<AccountModel>>
+     */
     private fun handleResultUpdate(resultUpdate: Result<List<AccountModel>>) {
         when (resultUpdate) {
             is Result.Failure -> _uiState.update { currentState ->
@@ -83,6 +67,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 
 
     fun resetLoginState() {
